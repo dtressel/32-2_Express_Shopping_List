@@ -33,12 +33,27 @@ describe("POST /items", function() {
     );
     expect(resp.statusCode).toBe(201);
     expect(resp.body).toEqual(
-      {added: {name: 'orange', price: 1.09}},
+      {added: {name: 'orange', price: 1.09}}
     );
     expect(items.find(item => item.name === 'orange')).toEqual(
       {name: 'orange', price: 1.09}
     );
   });
+  test("that a user can't add a duplicate item", async function() {
+    const resp = await request(app).post(`/items`).send(
+      {name: 'cookies', price: 1.79}
+    );
+    expect(resp.statusCode).toBe(400);
+    expect(resp.body).toEqual(
+      {error: {
+        message: 'cookies is already the name of an item in the database.',
+        status: 400}
+      }
+    );
+    expect(items.find(item => item.name === 'cookies')).toEqual(
+      {name: 'cookies', price: 2.99}
+    );
+  })
 });
 
 describe("GET /items/chips", function() {

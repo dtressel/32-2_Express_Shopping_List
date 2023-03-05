@@ -20,6 +20,9 @@ router.post('/', (req, res, next) => {
     if (req.body.length > 2) {
       throw new ExpressError('Please only include name and/or price information your request. Please try again!', 400);
     }
+    if (items.find((item) => item.name === name)) {
+      throw new ExpressError(`${name} is already the name of an item in the database.`, 400);
+    }
     items.push({name, price});
     res.status(201).json({added: items[items.length - 1]});
   }
